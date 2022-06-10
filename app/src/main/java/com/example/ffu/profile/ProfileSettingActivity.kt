@@ -51,7 +51,7 @@ class ProfileSettingActivity : AppCompatActivity() {
     private lateinit var auth : FirebaseAuth
     private lateinit var storage: FirebaseStorage
 
-    private val ip = "163.239.255.162"
+    private val ip = "59.9.212.155"
     private val port = 30000
     private lateinit var socket: Socket
     private lateinit var dos: DataOutputStream
