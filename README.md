@@ -14,8 +14,48 @@
 
 ------------
 
-### 3/11 
+## 시나리오
+<img src="https://user-images.githubusercontent.com/81675254/173142022-9a7c5aed-0335-4682-824a-9d3f248eb446.png" height="400px" width="600px">
 
+------------
+
+## 프로젝트 기능
+1. 로그인 및 회원가입
+    + 로그인은 휴대전화로 인증 가능
+    + 성별, 생일을 입력하여 회원가입을 할 수 있음
+<img src="https://user-images.githubusercontent.com/81675254/173142021-a4ee1bd0-71b4-4b4f-afd7-752e704627f6.png" height="400px" width="600px">
+<img src="https://user-images.githubusercontent.com/81675254/173150069-fc722ee1-cb7d-4c9c-890e-4d541dd8d45a.gif" height="400px" width="200px">
+
+
+2. 추천
+    + 사용자가 선택한 항목(거리, MBTI, 성격, 취미, 흡연 유무)을 기준으로 상대방을 추천
+    + 사용자는 추천 리스트에 뜬 상대방의 정보를 보고 Like/Dislike를 상대방에게 보낼 수 있음
+<img src="https://user-images.githubusercontent.com/81675254/173142017-83df0e32-35e1-4da8-81d0-d414f9f71c5a.png" height="400px" width="600px">
+<img src="https://user-images.githubusercontent.com/81675254/173151305-0b3cb08b-b016-4531-8480-c96e62984875.png" height="400px" width="800px">
+<img src="https://user-images.githubusercontent.com/81675254/173150074-4531b743-8b1d-4804-9588-5375eff2d9f9.gif" height="400px" width="200px">
+
+
+3. 매칭
+    + 나에게 Like를 보낸 상대방의 리스트가 뜸
+    + 상대방에게 LIKE 를 보낼 경우 : 서로 매칭이 되면서 채팅방이 형성되며 1:1 채팅이 가능
+    + 상대방에게 DISLIKE 를 보낸 경우 : 더이상 매칭이 될 수 없게 됨
+<img src="https://user-images.githubusercontent.com/81675254/173151311-982edb5d-d28b-45e2-8fbe-abaccb6c221f.png" height="400px" width="650px">
+<img src="https://user-images.githubusercontent.com/81675254/173150055-7c212b0f-3ded-41b0-b8a5-92b66bd97501.gif" height="400px" width="200px">
+
+4. 채팅
+    + 서로 Like를 보낸 사용자들끼리 매칭되어 채팅방 생성
+    + 채팅 내용이 실시간으로 업데이트
+<img src="https://user-images.githubusercontent.com/81675254/173142015-9eb19a0d-f39f-48c0-bda3-b1d0348c7a33.png" height="400px" width="650px">
+<img src="https://user-images.githubusercontent.com/81675254/173150082-98d65db6-2764-42f2-b1ab-a201a3e1319f.gif" height="400px" width="200px">
+
+5. 프로필
+    + 프로필 편집이 가능하고 히스토리를 볼 수 있음
+<img src="https://user-images.githubusercontent.com/81675254/173142020-48973124-962f-4d00-ba20-d1df2109bd09.png" height="400px" width="500px">
+<img src="https://user-images.githubusercontent.com/81675254/173150079-716d1a47-128b-4102-b996-75980c74644e.gif" height="400px" width="200px">
+
+------------
+
+### 3/11 
 + 프로젝트 주제 결정
 
 + 주제 : 코로나 바이러스로 인해 대면 활동이 어려워진 사람들을 위한 친구 추천 APP
@@ -319,3 +359,20 @@
     + 상대방이 채팅을 보내면 즉각적으로 채팅 목록에서 가장 마지막으로 보낸 채팅 로그 및 시간대가 나타나도록 기능 구현
     + 상대방이 채팅방을 나가게 될 경우 => "..." 님이 나갔습니다. 문구가 떠서 유저가 채팅방을 나간 것을 확인할 수 있도록 함 
     + 유저가 나간 채팅방에 들어가게 되면 문자를 보낼 수 없으며 오직 채팅방 나가기 및 뒤로가기만 가능하다.
+------------
+
+### 6/11 (Final)
+1. 추천 로직 변경
+    + 성격, 취미 등을 선택하지 않고 mbti 만 선택할 경우, 일치하는 mbti 가 있음에도 불구하고 추천이 되지 않는 issue 발생
+    + issue 원인 : mbti ~> personality ~> hobby 순서로 유저들을 intersection 했기 때문
+        + mbti = { "ESTJ" }, 성격 = { }, 취미 = { "게임" } 인 경우 { "ESTJ" } => { } => { } 
+    + issue 해결 : intersection 방식을 union 방식으로 변경하였음
+        + mbti = { "ESTJ" }, 성격 = { }, 취미 = { "게임" } 인 경우 { "ESTJ" } => { "ESTJ" } => { "ESTJ", "게임" }
+
+2. 채팅 로그 변경
+    + 채팅 날짜 "12시 9분" 를 "12시 09분" 으로 변경
+        + minute < 10 : "0" + minute 으로 처리
+    + 현재 날짜를 받아올 때, 오전 4:14 인 경우 오후 4:14 으로 받아오는 issue 발생
+        + issue 원인 : System.currentTimeMillis() 를 호출하여 발생된 원인임을 확인
+        + issue 해결 : LocalDateTime.now() 를 호출하여 해결
+------------

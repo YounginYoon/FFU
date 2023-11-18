@@ -1,10 +1,12 @@
 package com.example.ffu.chatting
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ffu.R
@@ -26,6 +28,8 @@ import com.example.ffu.UserInformation.Companion.PROFILE
 import com.example.ffu.utils.ChattingArticle
 import com.example.ffu.utils.Listener
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class ChattingFragment: Fragment(R.layout.fragment_chatting) {
     companion object {
@@ -42,6 +46,7 @@ class ChattingFragment: Fragment(R.layout.fragment_chatting) {
         Firebase.auth
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -119,12 +124,18 @@ class ChattingFragment: Fragment(R.layout.fragment_chatting) {
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun sendDateToLong(lastSendDate : String?) : Long {
         var sendDate = lastSendDate
 
         if (lastSendDate == null) // 첫 매칭된 유저가 가장 상단에 배치되도록 우선순위 부여
-            sendDate = SimpleDateFormat("yyyy-MM-dd hh:mm")
-                .format(System.currentTimeMillis()).toString()
+        {
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+            val formatted = current.format(formatter)
+
+            sendDate = formatted.toString()
+        }
 
         val year = sendDate!!.split("-")[0]
         val month = sendDate.split("-")[1]
@@ -137,6 +148,7 @@ class ChattingFragment: Fragment(R.layout.fragment_chatting) {
         return (year + month + day + hour + minute).toLong()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun addArticleList() {
         articleList.clear()
         for (matchId in MATCH_USER.keys) {

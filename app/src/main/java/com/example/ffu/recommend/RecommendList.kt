@@ -51,6 +51,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import com.example.ffu.UserInformation.Companion.ANIMATION
+import com.example.ffu.UserInformation.Companion.MATCH_USER
 import org.w3c.dom.Text
 
 class RecommendList(recommendUsersUid: MutableMap<String, Int>) : BottomSheetDialogFragment() {
@@ -169,7 +170,8 @@ class RecommendList(recommendUsersUid: MutableMap<String, Int>) : BottomSheetDia
         recommendUserList.clear()
         for(userId in recommendUsers.keys){
             //이미 LIKE 또는 DISLIKE를 보내거나 받은 유저이면 recommend에 뜨지 않게 한다.
-            if(CURRENT_USERID!=userId && !SEND_LIKE_USER.containsKey(userId)&& !RECEIVED_LIKE_USER.containsKey(userId)){
+            if(CURRENT_USERID!=userId && !SEND_LIKE_USER.containsKey(userId)&& !RECEIVED_LIKE_USER.containsKey(userId)
+                && !MATCH_USER.containsKey(userId)){
                 val nickname = PROFILE[userId]?.nickname ?: ""
                 val ageJob = PROFILE[userId]?.age+ ", "+ PROFILE[userId]?.job
                 val introMe = PROFILE[userId]?.introMe ?: ""

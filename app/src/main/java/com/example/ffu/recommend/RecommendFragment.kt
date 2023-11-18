@@ -81,10 +81,7 @@ class RecommendFragment : Fragment(), OnMapReadyCallback {
             val usersUid: ArrayList<String> = UserInformation.MAP_USER
             val myRadius = RecommendData.myRadius / 1000.0
             val recommendUsersUid = ArrayList<String>()
-            val mbtiMatched = mutableMapOf<String, Int>()
-            val hobbyMatched = mutableMapOf<String, Int>()
-            val personalityMatched = mutableMapOf<String, Int>()
-            val finalMatched = mutableMapOf<String, Int>()
+            val userMatched = mutableMapOf<String, Int>()
             var realMatched = mutableMapOf<String, Int>()
 
             for (uid in usersUid) {
@@ -99,9 +96,7 @@ class RecommendFragment : Fragment(), OnMapReadyCallback {
                 if (distance < myRadius) {
                     recommendUsersUid.add(uid)
                     RecommendData.distanceUsers[uid] = distance * 1000.0
-                    hobbyMatched[uid] = 0
-                    personalityMatched[uid] = 0
-                    finalMatched[uid] = 0
+                    userMatched[uid] = 0
                 }
             }
 
@@ -112,48 +107,42 @@ class RecommendFragment : Fragment(), OnMapReadyCallback {
             for (mbti in RecommendData.MBTISet) {
                 for (uid in recommendUsersUid) {
                     if (PROFILE[uid]?.mbti?.contains(mbti) == true) {
-                        mbtiMatched[uid] = 1
+                        userMatched[uid] = 1
                     }
-                    // hobbyMatched[uid] = 0
                 }
             }
+
             for (hobby in RecommendData.hobbySet) {
-                for (uid in mbtiMatched.keys) {
+                for (uid in recommendUsersUid) {
                     if (PROFILE[uid]?.hobby?.contains(hobby) == true) {
-                        hobbyMatched[uid] = hobbyMatched[uid]!! + 1
+                        userMatched[uid] = userMatched[uid]!! + 1
                     }
-                    // personalityMatched[uid] = 0
                 }
             }
 
             for (personality in RecommendData.personalitySet) {
-                for (uid in hobbyMatched.keys) {
+                for (uid in recommendUsersUid) {
                     if (PROFILE[uid]?.personality?.contains(personality) == true) {
-                        personalityMatched[uid] = personalityMatched[uid]!! + 1
-                    }
-                    // finalMatched[uid] = 0
-                }
-            }
-
-            if (RecommendData.smokingCheck) {
-                for (uid in personalityMatched.keys) {
-                    finalMatched[uid] = personalityMatched[uid]!! + hobbyMatched[uid]!!
-                }
-            } else {
-                for (uid in personalityMatched.keys) {
-                    if (PROFILE[uid]?.smoke?.equals("흡연") == false) {
-                        finalMatched[uid] = personalityMatched[uid]!! + hobbyMatched[uid]!!
+                        userMatched[uid] = userMatched[uid]!! + 1
                     }
                 }
             }
 
-            finalMatched.forEach { (k, v) -> Log.d("finalMatched", "${k}, ${v}") }
+            if (!RecommendData.smokingCheck) {
+                for (uid in recommendUsersUid) {
+                    if (PROFILE[uid]?.smoke?.equals("흡연") == true) {
+                        userMatched[uid] = 0
+                    }
+                }
+            }
 
-            for(userId in finalMatched.keys){
+            userMatched.forEach { (k, v) -> Log.d("finalMatched", "${k}, ${v}") }
+
+            for(userId in userMatched.keys){
                 //이미 LIKE 또는 DISLIKE를 보내거나 받은 유저이면 recommend에 뜨지 않게 한다.
                 if(UserInformation.CURRENT_USERID !=userId && !UserInformation.SEND_LIKE_USER.containsKey(userId)
-                    && !UserInformation.RECEIVED_LIKE_USER.containsKey(userId) && finalMatched[userId] != 0){
-                    realMatched[userId] = finalMatched[userId]!!
+                    && !UserInformation.RECEIVED_LIKE_USER.containsKey(userId) && userMatched[userId] != 0){
+                    realMatched[userId] = userMatched[userId]!!
                 }
             }
 

@@ -129,8 +129,12 @@ class MatchingFragment: Fragment(R.layout.fragment_matching) {
         val smoke: TextView = mView.findViewById(R.id.dialog_userinformation_smoke)
         val like : ToggleButton = mView.findViewById(R.id.dialog_userinformation_like)
         val dislike : ToggleButton = mView.findViewById(R.id.dialog_userinformation_dislike)
+        val name : TextView = mView.findViewById(R.id.dialog_userinformation_name)
+        val introMe : TextView = mView.findViewById(R.id.dialog_userinformation_introMe)
 
         age.text=PROFILE[userId]?.age
+        name.text = PROFILE[userId]?.nickname
+        introMe.text = PROFILE[userId]?.introMe
         //birth.text="생일 : "+ PROFILE[userId]?.birth
         drinking.text= PROFILE[userId]?.drinking
         hobby.text=PROFILE[userId]?.hobby
@@ -167,7 +171,7 @@ class MatchingFragment: Fragment(R.layout.fragment_matching) {
                 scaleAnimation
             )
             like.setBackgroundResource(R.drawable.ic_likefull)
-            Toast.makeText(activity, "matching 되었습니다!",Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "매칭 되었습니다!",Toast.LENGTH_SHORT).show()
             //상대방꺼에 나를 저장
             val otherMatchDB = Firebase.database.reference.child("likeInfo").child(userId).child("match")
             val otherMatchMap = mutableMapOf<String, Any>()

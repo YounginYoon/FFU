@@ -2,10 +2,12 @@ package com.example.ffu.chatting
 
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,10 +19,13 @@ import com.example.ffu.UserInformation.Companion.DATE_LAST_LOG
 import com.example.ffu.databinding.ItemChattingArticleBinding
 import com.example.ffu.utils.ChattingArticle
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class ArticleAdapter(val onItemClicked: (ChattingArticle) -> Unit) : ListAdapter<ChattingArticle, ArticleAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding: ItemChattingArticleBinding): RecyclerView.ViewHolder(binding.root){
+        @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("ResourceAsColor")
         fun bind(chattingArticleModel: ChattingArticle){
             val dateLastLog = DATE_LAST_LOG[chattingArticleModel.Id]
@@ -29,15 +34,13 @@ class ArticleAdapter(val onItemClicked: (ChattingArticle) -> Unit) : ListAdapter
             binding.itemChattingArticleName.text = chattingArticleModel.Name
 
             if (dateLastLog == null) { // 첫 매칭된 경우
+                val current = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+                val formatted = current.format(formatter)
+
                 binding.itemChattingArticleChatLog.text = "채팅방이 생성되었습니다."
-                binding.itemChattingArticleDate.text = getLastDate(SimpleDateFormat("yyyy-MM-dd hh:mm")
-                    .format(System.currentTimeMillis()).toString())
+                binding.itemChattingArticleDate.text = getLastDate(formatted.toString())
             } else {
-                if (dateLastLog.last() == '_') // 상대방이 나간 경우
-                {
-                    binding.itemChattingArticleChatLog.setTextColor(R.color.heart_primary_color)
-                    Log.d("이게 된다고?", "말도 안돼")
-                }
                 binding.itemChattingArticleDate.text = getLastDate(dateLastLog)
                 binding.itemChattingArticleChatLog.text = getLastChat(chatLastLog)
             }
@@ -55,23 +58,28 @@ class ArticleAdapter(val onItemClicked: (ChattingArticle) -> Unit) : ListAdapter
             }
         }
 
+        @RequiresApi(Build.VERSION_CODES.O)
         private fun getLastDate(lastDateLog: String?): String {
-            val curDate = SimpleDateFormat("yyyy-MM-dd hh:mm")
-                .format(System.currentTimeMillis())
-                .split("-")
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+            val formatted = current.format(formatter)
+
+            val curDate = formatted.split("-")
+            Log.d("check date", lastDateLog.toString() + " / " + curDate)
             val lastDate = lastDateLog!!.split("-")
             var result : String = ""
 
             if (curDate[0] == lastDate[0] && curDate[1] == lastDate[1]
                 && curDate[2].split(" ")[0] == lastDate[2].split(" ")[0]) {
                 result = lastDateLog.split(" ")[1]
-                val hour = result.split(":")[0].toInt()
-                val minute = result.split(":")[1].toInt()
+                val hourInt = result.split(":")[0].toInt()
+                val hour = result.split(":")[0].substring(0, 2)
+                val minute = result.split(":")[1].substring(0, 2)
 
-                if (hour < 12) {
-                    result = "오전 " + hour.toString() + ":" + minute.toString()
+                if (hourInt < 12) {
+                    result = "오전 " + hour + ":" + minute
                 } else {
-                    result = "오후 " + hour.toString() + ":" + minute.toString()
+                    result = "오후 " + hour + ":" + minute
                 }
             } else {
                 val month = lastDate[1].toInt()
@@ -99,6 +107,7 @@ class ArticleAdapter(val onItemClicked: (ChattingArticle) -> Unit) : ListAdapter
         return ViewHolder(ItemChattingArticleBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentList[position])
     }

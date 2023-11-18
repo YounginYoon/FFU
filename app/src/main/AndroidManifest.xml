@@ -22,11 +22,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FFU"
         tools:replace="android:icon">
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:label="@string/title_activity_main"
-            android:theme="@style/Theme.FFU" />
         <!-- naver map API auth info -->
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
@@ -47,7 +42,6 @@
         <activity android:name=".BackgroundActivity" />
         <activity android:name=".profile.ProfileSettingActivity" />
         <activity android:name=".chatdetail.ChatRoomActivity" />
-        <activity android:name=".profile.SettingActivity" />
     </application>
 
 </manifest>

@@ -28,7 +28,7 @@ class HistoryAdapter() : ListAdapter<History, HistoryAdapter.ViewHolder>(diffUti
                     binding.itemHistoryIc.setImageResource(R.drawable.ic_likefull)
                 }
                 MATCH_TYPE->{
-                    binding.itemHistoryMessage.text=historyModel.name+" 님과 match 되었습니다."
+                    binding.itemHistoryMessage.text=historyModel.name+" 님과 매칭 되었습니다."
                     binding.itemHistoryIc.setImageResource(R.drawable.ic_match)
                 }
             }
